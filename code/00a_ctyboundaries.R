@@ -66,6 +66,25 @@ for (i in 2:length(geoids)) {
 allcounties_2015_2021 <- all_counties_2019 |> 
   filter(STATEFP %in% state_fips) |> 
   mutate(
+    # SD: Oglala Lakota -> Shannon
+    GEOID = ifelse(GEOID == "46102", "46113", GEOID),
+    NAME  = ifelse(GEOID == "46113", "Shannon", NAME),
+    
+    # AK: Kusilvak -> Wade Hampton
+    GEOID = ifelse(GEOID == "02158", "02270", GEOID),
+    NAME  = ifelse(GEOID == "02270", "Wade Hampton", NAME),
+    
+    # AK: Chugach & Copper River -> Valdez-Cordova (in 2019)
+    GEOID = ifelse(GEOID %in% c("02063", "02066"), "02261", GEOID),
+    NAME  = ifelse(GEOID == "02261", "Valdez-Cordova", NAME)
+  ) |> 
+  group_by(GEOID, NAME, STATEFP) |> 
+  summarise(geometry = st_union(geometry), .groups = "drop")
+
+
+allcounties_2015_2021 <- all_counties_2019 |> 
+  filter(STATEFP %in% state_fips) |> 
+  mutate(
     # SD: Oglala Lakota -> Shannon (if 2019 already uses new code)
     GEOID = ifelse(GEOID == "46102", "46113", GEOID),
     NAME  = ifelse(GEOID == "46113", "Shannon", NAME),
@@ -95,20 +114,20 @@ allcounties_2022_2024 <- all_counties_2019 |>
   )
 
 
-st_write(all_counties_2015, here("data", "0_ctyshapefiles", "counties_2015.shp"))
-st_write(all_counties_2016, here("data", "0_ctyshapefiles", "counties_2016.shp"))
-st_write(all_counties_2017, here("data", "0_ctyshapefiles", "counties_2017.shp"))
-st_write(all_counties_2018, here("data", "0_ctyshapefiles", "counties_2018.shp"))
-st_write(all_counties_2019, here("data", "0_ctyshapefiles", "counties_2019.shp"))
-st_write(all_counties_2020, here("data", "0_ctyshapefiles", "counties_2020.shp"))
-st_write(all_counties_2021, here("data", "0_ctyshapefiles", "counties_2021.shp"))
-st_write(all_counties_2022, here("data", "0_ctyshapefiles", "counties_2022.shp"))
-st_write(all_counties_2023, here("data", "0_ctyshapefiles", "counties_2023.shp"))
-st_write(all_counties_2024, here("data", "0_ctyshapefiles", "counties_2024.shp"))
+st_write(all_counties_2015, here("data", "0_ctyboundaries", "counties_2015.shp"))
+st_write(all_counties_2016, here("data", "0_ctyboundaries", "counties_2016.shp"))
+st_write(all_counties_2017, here("data", "0_ctyboundaries", "counties_2017.shp"))
+st_write(all_counties_2018, here("data", "0_ctyboundaries", "counties_2018.shp"))
+st_write(all_counties_2019, here("data", "0_ctyboundaries", "counties_2019.shp"))
+st_write(all_counties_2020, here("data", "0_ctyboundaries", "counties_2020.shp"))
+st_write(all_counties_2021, here("data", "0_ctyboundaries", "counties_2021.shp"))
+st_write(all_counties_2022, here("data", "0_ctyboundaries", "counties_2022.shp"))
+st_write(all_counties_2023, here("data", "0_ctyboundaries", "counties_2023.shp"))
+st_write(all_counties_2024, here("data", "0_ctyboundaries", "counties_2024.shp"))
 
 
-st_write(allcounties_2015_2021, here("data", "0_ctyshapefiles", "counties_2015_2021.shp"))
-st_write(allcounties_2022_2024, here("data", "0_ctyshapefiles", "counties_2022_2024.shp"))
+st_write(allcounties_2015_2021, here("data", "0_ctyboundaries", "counties_2015_2021.shp"))
+st_write(allcounties_2022_2024, here("data", "0_ctyboundaries", "counties_2022_2024.shp"))
 
 
 
