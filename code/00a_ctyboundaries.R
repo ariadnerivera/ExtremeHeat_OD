@@ -114,20 +114,78 @@ allcounties_2022_2024 <- all_counties_2019 |>
   )
 
 
-st_write(all_counties_2015, here("data", "0_ctyboundaries", "counties_2015.shp"))
-st_write(all_counties_2016, here("data", "0_ctyboundaries", "counties_2016.shp"))
-st_write(all_counties_2017, here("data", "0_ctyboundaries", "counties_2017.shp"))
-st_write(all_counties_2018, here("data", "0_ctyboundaries", "counties_2018.shp"))
-st_write(all_counties_2019, here("data", "0_ctyboundaries", "counties_2019.shp"))
-st_write(all_counties_2020, here("data", "0_ctyboundaries", "counties_2020.shp"))
-st_write(all_counties_2021, here("data", "0_ctyboundaries", "counties_2021.shp"))
-st_write(all_counties_2022, here("data", "0_ctyboundaries", "counties_2022.shp"))
-st_write(all_counties_2023, here("data", "0_ctyboundaries", "counties_2023.shp"))
-st_write(all_counties_2024, here("data", "0_ctyboundaries", "counties_2024.shp"))
+st_write(all_counties_2015, here("data", "2_intermediate", "ctyboundaries", "counties_2015.shp"))
+st_write(all_counties_2016, here("data", "2_intermediate", "ctyboundaries", "counties_2016.shp"))
+st_write(all_counties_2017, here("data", "2_intermediate", "ctyboundaries", "counties_2017.shp"))
+st_write(all_counties_2018, here("data", "2_intermediate", "ctyboundaries", "counties_2018.shp"))
+st_write(all_counties_2019, here("data", "2_intermediate", "ctyboundaries", "counties_2019.shp"))
+st_write(all_counties_2020, here("data", "2_intermediate", "ctyboundaries", "counties_2020.shp"))
+st_write(all_counties_2021, here("data", "2_intermediate", "ctyboundaries", "counties_2021.shp"))
+st_write(all_counties_2022, here("data", "2_intermediate", "ctyboundaries", "counties_2022.shp"))
+st_write(all_counties_2023, here("data", "2_intermediate", "ctyboundaries", "counties_2023.shp"))
+st_write(all_counties_2024, here("data", "2_intermediate", "ctyboundaries", "counties_2024.shp"))
 
 
-st_write(allcounties_2015_2021, here("data", "0_ctyboundaries", "counties_2015_2021.shp"))
-st_write(allcounties_2022_2024, here("data", "0_ctyboundaries", "counties_2022_2024.shp"))
+st_write(allcounties_2015_2021, here("data", "2_intermediate", "ctyboundaries", "counties_2015_2021.shp"))
+st_write(allcounties_2022_2024, here("data", "2_intermediate", "ctyboundaries", "counties_2022_2024.shp"))
+
+
+###########################
+
+# csv with list of counties
+
+
+years <- 2015:2024
+
+fips_by_year <- data.frame()
+
+for (yr in years) {
+  cty <- counties(year = yr, cb = TRUE)
+  cty_df <- st_drop_geometry(cty)
+  cty_df <- cty_df[cty_df$STATEFP %in% state_fips, ]
+  cty_df$year <- yr
+  fips_by_year <- rbind(fips_by_year, cty_df[, c("year", "GEOID", "NAME", "STATEFP")])
+}
+
+
+write.csv(fips_by_year, here("data", "2_intermediate", "ctylist", "county_fips_by_year.csv"), row.names = FALSE)
+
+###########
+
+
+# Boundary in 2020 
+
+
+years <- 2020
+
+fips_2020 <- data.frame()
+
+for (yr in years) {
+  cty <- counties(year = yr, cb = TRUE)
+  cty_df <- st_drop_geometry(cty)
+  cty_df <- cty_df[cty_df$STATEFP %in% state_fips, ]
+  cty_df$year <- yr
+  fips_2020 <- rbind(fips_2020, cty_df[, c("year", "GEOID", "NAME", "STATEFP")])
+}
+
+
+write.csv(fips_2020, here("data", "2_intermediate", "ctylist", "county_fips_by_2020.csv"), row.names = FALSE)
+
+### Boundary in 2022
+years <- 2022
+
+fips_2022 <- data.frame()
+
+for (yr in years) {
+  cty <- counties(year = yr, cb = TRUE)
+  cty_df <- st_drop_geometry(cty)
+  cty_df <- cty_df[cty_df$STATEFP %in% state_fips, ]
+  cty_df$year <- yr
+  fips_2022 <- rbind(fips_2022, cty_df[, c("year", "GEOID", "NAME", "STATEFP")])
+}
+
+write.csv(fips_2022, here("data", "2_intermediate", "ctylist", "county_fips_by_2022.csv"), row.names = FALSE)
+
 
 
 
